@@ -21,6 +21,7 @@ EOF
 
 # Enable mod_rewrite
 sudo a2enmod rewrite
+sed -i '11 s/AllowOverride None/AllowOverride All/' /etc/apache2/sites-available/default
 
 # Configure PHP error reporting
 sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php5/apache2/php.ini

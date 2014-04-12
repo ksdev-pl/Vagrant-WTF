@@ -1,4 +1,4 @@
-![Vagrant-WTF](https://dl.dropboxusercontent.com/u/143578/temp/vagrant_wtf.png)
+![Vagrant-WTF](http://oi59.tinypic.com/2dllrae.jpg)
 
 You should probably use one of the other options for Vagrant configuration, like:
 * [__PuPHPet__](https://puphpet.com/)
