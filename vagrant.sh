@@ -33,7 +33,7 @@ sudo service apache2 restart
 # Enable remote access to database
 sed -i "s/bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
 MYSQL=`which mysql`
-Q1="GRANT ALL ON *.* TO 'root'@'192.168.33.1' IDENTIFIED BY 'root' WITH GRANT OPTION;"
+Q1="GRANT ALL ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;"
 Q2="FLUSH PRIVILEGES;"
 SQL="${Q1}${Q2}"
 $MYSQL -uroot -proot -e "$SQL"
