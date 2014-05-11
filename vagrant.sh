@@ -19,8 +19,8 @@ xdebug.cli_color = 1
 xdebug.show_local_vars = 1
 EOF
 
-# Enable mod_rewrite
-sudo a2enmod rewrite
+# Enable mod_rewrite & mod_headers
+sudo a2enmod rewrite headers
 sed -i '11 s/AllowOverride None/AllowOverride All/' /etc/apache2/sites-available/default
 
 # Configure PHP error reporting
