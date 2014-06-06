@@ -17,6 +17,9 @@ xdebug.remote_port = 9000
 xdebug.scream = 1
 xdebug.cli_color = 1
 xdebug.show_local_vars = 1
+xdebug.profiler_enable_trigger = 1
+xdebug.profiler_output_dir = "/vagrant"
+xdebug.profiler_output_name = "cachegrind.out.%s"
 EOF
 
 # Enable mod_rewrite & mod_headers
