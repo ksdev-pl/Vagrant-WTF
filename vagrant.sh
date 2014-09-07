@@ -26,6 +26,13 @@ EOF
 sudo a2enmod rewrite headers
 sed -i '11 s/AllowOverride None/AllowOverride All/' /etc/apache2/sites-available/default
 
+# Change DocumentRoot
+sed -i '4 s/DocumentRoot \/var\/www/DocumentRoot \/var\/www\/public/' /etc/apache2/sites-available/default
+sed -i '9 s/<Directory \/var\/www\/>/<Directory \/var\/www\/public\/>/' /etc/apache2/sites-available/default
+
+# Remove index.html
+rm /var/www/index.html
+
 # Configure PHP error reporting
 sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php5/apache2/php.ini
 sed -i "s/display_errors = .*/display_errors = On/" /etc/php5/apache2/php.ini
