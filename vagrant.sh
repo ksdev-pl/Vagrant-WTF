@@ -7,7 +7,7 @@ sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password passwor
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root'
 
 # Install Apache, PHP & MySQL
-sudo apt-get install -y php5 apache2 libapache2-mod-php5 php5-curl php5-gd php5-mcrypt mysql-server php5-mysql php5-xdebug
+sudo apt-get install -y php5 apache2 libapache2-mod-php5 php5-curl php5-gd php5-mcrypt mysql-server php5-mysql php5-xdebug zip
 
 # Configure Xdebug
 cat << EOF | sudo tee -a /etc/php5/mods-available/xdebug.ini
