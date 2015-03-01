@@ -9,8 +9,11 @@ sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again p
 # Install Apache, PHP & MySQL
 sudo apt-get install -y php5 apache2 libapache2-mod-php5 php5-curl php5-gd php5-mcrypt mysql-server php5-mysql php5-xdebug zip
 
+# Enable mcrypt
+sudo php5enmod mcrypt
+
 # Configure Xdebug
-cat << EOF | sudo tee -a /etc/php5/mods-available/xdebug.ini
+sudo cat << EOF | sudo tee -a /etc/php5/mods-available/xdebug.ini
 xdebug.remote_enable = 1
 xdebug.remote_connect_back = 1
 xdebug.remote_port = 9000
@@ -22,26 +25,27 @@ xdebug.profiler_output_dir = "/vagrant"
 xdebug.profiler_output_name = "cachegrind.out.%s"
 EOF
 
-# Enable mod_rewrite & mod_headers
+# Configure Apache
+sudo a2enmod ssl
+sudo a2ensite default-ssl.conf
 sudo a2enmod rewrite headers
-sed -i '11 s/AllowOverride None/AllowOverride All/' /etc/apache2/sites-available/default
+sudo sed -i '165 s/Options Indexes FollowSymLinks/Options FollowSymLinks/' /etc/apache2/apache2.conf
+sudo sed -i '166 s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+sudo sed -i '12 s/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/public/' /etc/apache2/sites-enabled/000-default.conf
+sudo sed -i '5 s/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/public/' /etc/apache2/sites-enabled/default-ssl.conf
 
-# Change DocumentRoot
-sed -i '4 s/DocumentRoot \/var\/www/DocumentRoot \/var\/www\/public/' /etc/apache2/sites-available/default
-sed -i '9 s/<Directory \/var\/www\/>/<Directory \/var\/www\/public\/>/' /etc/apache2/sites-available/default
+# Remove default DocumentRoot folder
+sudo rm -rf /var/www/html
 
-# Remove index.html
-rm /var/www/index.html
-
-# Configure PHP error reporting
-sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php5/apache2/php.ini
-sed -i "s/display_errors = .*/display_errors = On/" /etc/php5/apache2/php.ini
-sed -i "s/html_errors = .*/html_errors = On/" /etc/php5/apache2/php.ini
+# Configure PHP
+sudo sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php5/apache2/php.ini
+sudo sed -i "s/display_errors = .*/display_errors = On/" /etc/php5/apache2/php.ini
+sudo sed -i "s/html_errors = .*/html_errors = On/" /etc/php5/apache2/php.ini
 
 sudo service apache2 restart
 
 # Enable remote access to database
-sed -i "s/bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
+sudo sed -i "s/bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
 MYSQL=`which mysql`
 Q1="GRANT ALL ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;"
 Q2="FLUSH PRIVILEGES;"
