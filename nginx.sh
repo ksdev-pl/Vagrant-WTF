@@ -8,14 +8,83 @@ sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password passwor
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root'
 
 # Install Nginx, PHP, MySQL and zip
-sudo apt-get install -y nginx mysql-server php5-fpm php5-mysql php5-cli php5-curl php5-gd php5-mcrypt php5-intl php5-xdebug zip
+sudo apt-get install -y nginx mysql-server php5-fpm php5-mysql php5-cli php5-curl php5-gd php5-mcrypt php5-intl php5-xdebug ssl-cert zip
 
 # Configure Nginx
-sudo sed -i "s/worker_processes 4/worker_processes 1/" /etc/nginx/nginx.conf
+sudo cat << 'EOF' | sudo tee /etc/nginx/nginx.conf
+user www-data;
+worker_processes 1;
+pid /run/nginx.pid;
+
+events {
+        worker_connections 768;
+        # multi_accept on;
+}
+
+http {
+        ##
+        # Basic Settings
+        ##
+
+        sendfile on;
+        tcp_nopush on;
+        tcp_nodelay on;
+        keepalive_timeout 20;
+        types_hash_max_size 2048;
+        # server_tokens off;
+
+        # server_names_hash_bucket_size 64;
+        # server_name_in_redirect off;
+
+        include /etc/nginx/mime.types;
+        default_type application/octet-stream;
+
+        ##
+        # SSL Settings
+        ##
+
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2; # Dropping SSLv3, ref: POODLE
+        ssl_prefer_server_ciphers on;
+
+        ##
+        # Logging Settings
+        ##
+
+        access_log /var/log/nginx/access.log;
+        error_log /var/log/nginx/error.log;
+
+        ##
+        # Gzip Settings
+        ##
+
+        gzip on;
+        gzip_disable "msie6";
+
+        gzip_vary on;
+        gzip_proxied any;
+        gzip_comp_level 5;
+        gzip_min_length 256;
+        # gzip_buffers 16 8k;
+        # gzip_http_version 1.1;
+        gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+
+        ##
+        # Virtual Host Configs
+        ##
+
+        include /etc/nginx/conf.d/*.conf;
+        include /etc/nginx/sites-enabled/*;
+}
+EOF
 sudo cat << 'EOF' | sudo tee /etc/nginx/sites-enabled/default
 server {
-        listen 80 default_server;
-        listen [::]:80 default_server;
+        listen 80;
+        listen [::]:80;
+
+        listen 443 ssl spdy;
+        listen [::]:443 ssl spdy;
+
+        include snippets/snakeoil.conf;
 
         server_name vagrant.dev;
 
