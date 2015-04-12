@@ -54,8 +54,9 @@ sudo a2enmod ssl
 sudo a2ensite default-ssl.conf
 sudo sed -i '165 s/Options Indexes FollowSymLinks/Options FollowSymLinks/' /etc/apache2/apache2.conf
 sudo sed -i '166 s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
-sudo sed -i '12 s/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/public/' /etc/apache2/sites-enabled/000-default.conf
-sudo sed -i '5 s/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/public/' /etc/apache2/sites-enabled/default-ssl.conf
+sudo sed -i '9 s/#ServerName www.example.com/ServerName vagrant.dev/' /etc/apache2/sites-enabled/000-default.conf
+sudo sed -i '12 s/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/vagrant.dev\/public/' /etc/apache2/sites-enabled/000-default.conf
+sudo sed -i '5 s/DocumentRoot \/var\/www\/html/DocumentRoot \/var\/www\/vagrant.dev\/public/' /etc/apache2/sites-enabled/default-ssl.conf
 
 # Remove default DocumentRoot folder
 sudo rm -rf /var/www/html
@@ -64,6 +65,7 @@ sudo rm -rf /var/www/html
 sudo sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php5/fpm/php.ini
 sudo sed -i "s/display_errors = .*/display_errors = On/" /etc/php5/fpm/php.ini
 sudo sed -i "s/html_errors = .*/html_errors = On/" /etc/php5/fpm/php.ini
+sudo sed -i "s/;pm.max_requests = 500/pm.max_requests = 500/" /etc/php5/fpm/pool.d/www.conf
 
 sudo service php5-fpm restart
 sudo service apache2 restart
@@ -73,7 +75,8 @@ sudo sed -i "s/bind-address.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
 MYSQL=`which mysql`
 Q1="GRANT ALL ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;"
 Q2="FLUSH PRIVILEGES;"
-SQL="${Q1}${Q2}"
+Q3="CREATE DATABASE \`vagrant_dev\` COLLATE utf8_unicode_ci;"
+SQL="${Q1}${Q2}${Q3}"
 $MYSQL -uroot -proot -e "$SQL"
 
 sudo service mysql restart
