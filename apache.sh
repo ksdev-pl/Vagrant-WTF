@@ -44,6 +44,9 @@ xdebug.show_local_vars = 1
 xdebug.profiler_enable_trigger = 1
 xdebug.profiler_output_dir = "/vagrant"
 xdebug.profiler_output_name = "cachegrind.out.%s"
+xdebug.var_display_max_depth = -1
+xdebug.var_display_max_children = -1
+xdebug.var_display_max_data = -1
 EOF
 
 # Configure Apache
