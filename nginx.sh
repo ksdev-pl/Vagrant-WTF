@@ -33,6 +33,8 @@ http {
         types_hash_max_size 2048;
         # server_tokens off;
 
+        client_max_body_size 8m;
+
         # server_names_hash_bucket_size 64;
         # server_name_in_redirect off;
 
